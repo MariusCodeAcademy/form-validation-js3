@@ -16,7 +16,7 @@ class MainForm extends Component {
   // validacijo schema
   schema = {
     username: Joi.string().min(3).required(),
-    email: Joi.string().email().required(),
+    email: Joi.string().email({ minDomainSegments: 2 }).required(),
     password: Joi.string().min(4).required(),
     repeatPassword: Joi.ref('password'),
     agreement: Joi.boolean().required(),
@@ -25,6 +25,16 @@ class MainForm extends Component {
   validateForm() {
     const result = Joi.validate(this.state.account, this.schema, { abortEarly: false });
     console.log('Joi result', result);
+
+    if (!result.error) return;
+
+    const errors = {};
+    // errors.username = result.error.details;
+    for (let item of result.error.details) {
+      errors[item.path[0]] = item.message;
+    }
+    console.log('local errors', errors);
+    this.setState({ errors: errors });
 
     // if (this.state.account.username.length === 0) {
     //   this.setState({ errors: { username: 'Cant be blank' } });
@@ -48,7 +58,7 @@ class MainForm extends Component {
   };
 
   handleCheck = (event) => {
-    console.log(event);
+    // console.log(event);
     this.setState({ account: { ...this.state.account, agreement: event.target.checked } });
   };
 
@@ -71,27 +81,31 @@ class MainForm extends Component {
           <input
             onChange={this.handleChange}
             value={account.email}
-            className="input"
+            className={'input ' + (errors.email && 'is-invalid')}
             type="text"
             name="email"
             placeholder="email"
           />
+          {errors.email && <p className="error-msg">{errors.email}</p>}
+
           <input
             onChange={this.handleChange}
             value={account.password}
-            className="input"
+            className={'input ' + (errors.password && 'is-invalid')}
             type="text"
             name="password"
             placeholder="password"
           />
+          {errors.password && <p className="error-msg">{errors.password}</p>}
           <input
             onChange={this.handleChange}
             value={account.repeatPassword}
-            className="input"
+            className={'input ' + (errors.repeatPassword && 'is-invalid')}
             type="text"
             name="repeatPassword"
             placeholder="repeatPassword"
           />
+          {errors.repeatPassword && <p className="error-msg">{errors.repeatPassword}</p>}
           <div className="check-group">
             <input
               onChange={this.handleCheck}
@@ -102,6 +116,7 @@ class MainForm extends Component {
             />
             <label htmlFor="agreement">Agree?</label>
           </div>
+          {errors.agreement && <p className="error-msg">{errors.agreement}</p>}
           <button type="submit">Send</button>
         </form>
       </div>
