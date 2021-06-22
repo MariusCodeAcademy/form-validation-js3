@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Joi from 'joi-browser';
+import ValidationResults from './validationResults';
 
 class MainForm extends Component {
   state = {
@@ -93,58 +94,61 @@ class MainForm extends Component {
     return (
       <div className="main-form">
         <h1>Main form</h1>
-        <form onSubmit={this.handleSubmit} autoComplete="off">
-          <input
-            onChange={this.handleChange}
-            value={account.username}
-            className={'input ' + (errors.username && 'is-invalid')}
-            type="text"
-            name="username"
-            placeholder="Username"
-          />
-          {errors.username && <p className="error-msg">{errors.username}</p>}
-
-          <input
-            onChange={this.handleChange}
-            value={account.email}
-            className={'input ' + (errors.email && 'is-invalid')}
-            type="text"
-            name="email"
-            placeholder="email"
-          />
-          {errors.email && <p className="error-msg">{errors.email}</p>}
-
-          <input
-            onChange={this.handleChange}
-            value={account.password}
-            className={'input ' + (errors.password && 'is-invalid')}
-            type="text"
-            name="password"
-            placeholder="password"
-          />
-          {errors.password && <p className="error-msg">{errors.password}</p>}
-          <input
-            onChange={this.handleChange}
-            value={account.repeatPassword}
-            className={'input ' + (errors.repeatPassword && 'is-invalid')}
-            type="text"
-            name="repeatPassword"
-            placeholder="repeatPassword"
-          />
-          {errors.repeatPassword && <p className="error-msg">{errorMessages.repeatPassword}</p>}
-          <div className="check-group">
+        <div className="flex">
+          <form onSubmit={this.handleSubmit} autoComplete="off">
             <input
-              onChange={this.handleCheck}
-              value={account.agreement}
-              type="checkbox"
-              name="agreement"
-              id="agreement"
+              onChange={this.handleChange}
+              value={account.username}
+              className={'input ' + (errors.username && 'is-invalid')}
+              type="text"
+              name="username"
+              placeholder="Username"
             />
-            <label htmlFor="agreement">Agree?</label>
-          </div>
-          {errors.agreement && <p className="error-msg">{errorMessages.agreement}</p>}
-          <button type="submit">Send</button>
-        </form>
+            {errors.username && <p className="error-msg">{errors.username}</p>}
+
+            <input
+              onChange={this.handleChange}
+              value={account.email}
+              className={'input ' + (errors.email && 'is-invalid')}
+              type="text"
+              name="email"
+              placeholder="email"
+            />
+            {errors.email && <p className="error-msg">{errors.email}</p>}
+
+            <input
+              onChange={this.handleChange}
+              value={account.password}
+              className={'input ' + (errors.password && 'is-invalid')}
+              type="text"
+              name="password"
+              placeholder="password"
+            />
+            {errors.password && <p className="error-msg">{errors.password}</p>}
+            <input
+              onChange={this.handleChange}
+              value={account.repeatPassword}
+              className={'input ' + (errors.repeatPassword && 'is-invalid')}
+              type="text"
+              name="repeatPassword"
+              placeholder="repeatPassword"
+            />
+            {errors.repeatPassword && <p className="error-msg">{errorMessages.repeatPassword}</p>}
+            <div className="check-group">
+              <input
+                onChange={this.handleCheck}
+                value={account.agreement}
+                type="checkbox"
+                name="agreement"
+                id="agreement"
+              />
+              <label htmlFor="agreement">Agree?</label>
+            </div>
+            {errors.agreement && <p className="error-msg">{errorMessages.agreement}</p>}
+            <button type="submit">Send</button>
+          </form>
+          <ValidationResults />
+        </div>
       </div>
     );
   }
