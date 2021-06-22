@@ -9,11 +9,24 @@ class MainForm extends Component {
       repeatPassword: '',
       agreement: '',
     },
+    errors: {},
   };
+
+  validateForm() {
+    if (this.state.account.username.length === 0) {
+      this.setState({ errors: { username: 'Cant be blank' } });
+      return;
+    }
+    if (this.state.account.username.length <= 3) {
+      this.setState({ errors: { username: 'At least 3 letters' } });
+    }
+  }
 
   handleSubmit = (event) => {
     event.preventDefault();
     console.log('Stoped form');
+    this.setState({ errors: {} });
+    this.validateForm();
   };
 
   handleChange = (event) => {
@@ -27,7 +40,7 @@ class MainForm extends Component {
   };
 
   render() {
-    const { account } = this.state;
+    const { account, errors } = this.state;
     return (
       <div className="main-form">
         <h1>Main form</h1>
@@ -35,11 +48,13 @@ class MainForm extends Component {
           <input
             onChange={this.handleChange}
             value={account.username}
-            className="input"
+            className={'input ' + (errors.username && 'is-invalid')}
             type="text"
             name="username"
             placeholder="Username"
           />
+          {errors.username && <p className="error-msg">{errors.username}</p>}
+
           <input
             onChange={this.handleChange}
             value={account.email}
