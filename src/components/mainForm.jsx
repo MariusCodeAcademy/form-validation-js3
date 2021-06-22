@@ -76,11 +76,14 @@ class MainForm extends Component {
     const obj = { [name]: value };
     const schema = { [name]: this.schema[name] }; // {email: Joi.string().email({ minDomainSegments: 2 }).required(),}
     const result = Joi.validate(obj, schema);
+    console.log(result);
     if (result.error) {
       console.log(result.error.details[0].message);
       this.setState({ errors: { ...this.state.errors, [name]: result.error.details[0].message } });
     } else {
-      this.setState({ errors: { ...this.state.errors, [name]: '' } });
+      const errorsCopy = { ...this.state.errors };
+      delete errorsCopy[name];
+      this.setState({ errors: errorsCopy });
     }
   }
 
@@ -88,6 +91,12 @@ class MainForm extends Component {
     // console.log(event);
     this.setState({ account: { ...this.state.account, agreement: event.target.checked } });
   };
+
+  passProps() {
+    if (this.state.errors.password) return true;
+    if (this.state.errors.repeatPassword) return true;
+    return false;
+  }
 
   render() {
     const { account, errors, errorMessages } = this.state;
@@ -147,7 +156,7 @@ class MainForm extends Component {
             {errors.agreement && <p className="error-msg">{errorMessages.agreement}</p>}
             <button type="submit">Send</button>
           </form>
-          <ValidationResults />
+          <ValidationResults passErr={this.passProps()} />
         </div>
       </div>
     );
