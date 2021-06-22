@@ -8,18 +8,22 @@ class MainForm extends Component {
       email: '',
       password: '',
       repeatPassword: '',
-      agreement: '',
+      agreement: false,
     },
     errors: {},
+    errorMessages: {
+      agreement: 'Please confirm terms and conditions',
+      repeatPassword: 'Passwords must match',
+    },
   };
 
   // validacijo schema
   schema = {
-    username: Joi.string().min(3).required(),
+    username: Joi.string().min(3).required().label('Username'),
     email: Joi.string().email({ minDomainSegments: 2 }).required(),
     password: Joi.string().min(4).required(),
     repeatPassword: Joi.ref('password'),
-    agreement: Joi.boolean().required(),
+    agreement: Joi.boolean().required().invalid(false).default(false),
   };
 
   validateForm() {
@@ -45,10 +49,17 @@ class MainForm extends Component {
     // }
   }
 
+  resetErrors() {
+    this.setState({ errors: {} });
+    // jei agreement yra false tai => ''
+    this.state.account.agreement === false &&
+      this.setState({ account: { ...this.state.account, agreement: '' } });
+  }
+
   handleSubmit = (event) => {
     event.preventDefault();
     console.log('Stoped form');
-    this.setState({ errors: {} });
+    this.resetErrors();
     this.validateForm();
   };
 
@@ -78,7 +89,7 @@ class MainForm extends Component {
   };
 
   render() {
-    const { account, errors } = this.state;
+    const { account, errors, errorMessages } = this.state;
     return (
       <div className="main-form">
         <h1>Main form</h1>
@@ -120,7 +131,7 @@ class MainForm extends Component {
             name="repeatPassword"
             placeholder="repeatPassword"
           />
-          {errors.repeatPassword && <p className="error-msg">{errors.repeatPassword}</p>}
+          {errors.repeatPassword && <p className="error-msg">{errorMessages.repeatPassword}</p>}
           <div className="check-group">
             <input
               onChange={this.handleCheck}
@@ -131,7 +142,7 @@ class MainForm extends Component {
             />
             <label htmlFor="agreement">Agree?</label>
           </div>
-          {errors.agreement && <p className="error-msg">{errors.agreement}</p>}
+          {errors.agreement && <p className="error-msg">{errorMessages.agreement}</p>}
           <button type="submit">Send</button>
         </form>
       </div>
