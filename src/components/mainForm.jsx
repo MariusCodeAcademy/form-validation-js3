@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Joi from 'joi-browser';
 
 class MainForm extends Component {
   state = {
@@ -12,14 +13,26 @@ class MainForm extends Component {
     errors: {},
   };
 
+  // validacijo schema
+  schema = {
+    username: Joi.string().min(3).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(4).required(),
+    repeatPassword: Joi.ref('password'),
+    agreement: Joi.boolean().required(),
+  };
+
   validateForm() {
-    if (this.state.account.username.length === 0) {
-      this.setState({ errors: { username: 'Cant be blank' } });
-      return;
-    }
-    if (this.state.account.username.length <= 3) {
-      this.setState({ errors: { username: 'At least 3 letters' } });
-    }
+    const result = Joi.validate(this.state.account, this.schema, { abortEarly: false });
+    console.log('Joi result', result);
+
+    // if (this.state.account.username.length === 0) {
+    //   this.setState({ errors: { username: 'Cant be blank' } });
+    //   return;
+    // }
+    // if (this.state.account.username.length <= 3) {
+    //   this.setState({ errors: { username: 'At least 3 letters' } });
+    // }
   }
 
   handleSubmit = (event) => {
@@ -30,7 +43,7 @@ class MainForm extends Component {
   };
 
   handleChange = (event) => {
-    console.log(event);
+    // console.log(event);
     this.setState({ account: { ...this.state.account, [event.target.name]: event.target.value } });
   };
 
